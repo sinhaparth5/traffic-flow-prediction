@@ -15,5 +15,15 @@
     "astro": "^5.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@unocss/astro": "^65.5.0",
+    "@unocss/preset-attributify": "^65.5.0",
+    "@unocss/preset-icons": "^65.5.0",
+    "@unocss/preset-typography": "^65.5.0",
+    "@unocss/preset-uno": "^65.5.0",
+    "@unocss/preset-web-fonts": "^65.5.0",
+    "@unocss/reset": "^65.5.0",
+    "unocss": "^65.5.0"
   }
 }
