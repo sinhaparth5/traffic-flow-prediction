@@ -5,10 +5,18 @@
 
 package io.github.TrafficFlowPrediction.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  *
  * @author parth
  */
-public class HelloResponse {
 
+ @Data
+ @AllArgsConstructor
+ @NoArgsConstructor
+public class HelloResponse {
+    private String message;
 }
