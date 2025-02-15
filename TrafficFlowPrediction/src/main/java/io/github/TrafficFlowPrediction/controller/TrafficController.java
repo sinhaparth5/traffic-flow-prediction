@@ -12,6 +12,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,13 +26,13 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -44,7 +45,7 @@ import java.util.logging.Logger;
  @Tag(name = "Traffic Flow Controller", description = "APIs for traffic flow data and predictions")
 public class TrafficController {
 
-    private static final Logger log = Logger.getLogger(TrafficController.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(TrafficController.class);
 
     private final TrafficService trafficService;
 
@@ -61,7 +62,7 @@ public class TrafficController {
     public ResponseEntity<TrafficData> recordTrafficData(
         @Valid @RequestBody TrafficDataDTO trafficDataDTO
     ) {
-        log.info("Received TrafficDataDTO:" + trafficDataDTO);
+        log.info("Received TrafficDataDTO: {}", trafficDataDTO);
         return ResponseEntity.ok(trafficService.recordDataRepository(trafficDataDTO));
     }
 
