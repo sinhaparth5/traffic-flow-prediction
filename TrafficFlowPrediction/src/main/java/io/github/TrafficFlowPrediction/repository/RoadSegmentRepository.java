@@ -6,8 +6,10 @@
 package io.github.TrafficFlowPrediction.repository;
 
 import java.util.List;
+import java.util.UUID;
 
-import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,13 +21,31 @@ import io.github.TrafficFlowPrediction.entity.RoadSegment;
  */
 
  @Repository
-public interface RoadSegmentRepository extends JpaRepository<RoadSegment, Long> {
+public interface RoadSegmentRepository extends JpaRepository<RoadSegment, UUID> {
     List<RoadSegment> findByRoadType(String roadType);
 
-    @Query("SELECT rs FROM RoadSegment rs WHERE " +
-           "ST_Distance(ST_MakePoint(rs.startLatitude, rs.startLongitude), " +
-           "ST_MakePoint(?1, ?2)) <= ?3 OR " +
-           "ST_Distance(ST_MakePoint(rs.endLatitude, rs.endLongitude), " +
-           "ST_MakePoint(?1, ?2)) <= ?3")
-    List<RoadSegment> findNearbyRoadSegments(Double latitude, Double longitude, Double radiusKm);
+    @Query(value = """
+        SELECT * FROM road_segments rs 
+        WHERE 
+            (6371 * acos(
+                cos(radians(:latitude)) * 
+                cos(radians(rs.start_latitude)) * 
+                cos(radians(rs.start_longitude) - radians(:longitude)) + 
+                sin(radians(:latitude)) * 
+                sin(radians(rs.start_latitude))
+            ) <= :radiusKm
+        OR 
+            (6371 * acos(
+                cos(radians(:latitude)) * 
+                cos(radians(rs.end_latitude)) * 
+                cos(radians(rs.end_longitude) - radians(:longitude)) + 
+                sin(radians(:latitude)) * 
+                sin(radians(rs.end_latitude))
+            ) <= :radiusKm
+        """, nativeQuery = true)
+    List<RoadSegment> findNearbyRoadSegments(
+        @Param("latitude") Double latitude,
+        @Param("longitude") Double longitude,
+        @Param("radiusKm") Double radiusKm
+    );
 }

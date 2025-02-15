@@ -18,7 +18,7 @@ public class TrafficDataDTO {
     private Double latitude;
     private Double longitude;
     private Integer vehicleCount;
-    private Integer averageSpeed;
+    private Double averageSpeed;
     private Integer congestionLevel;
     private String weatherCondition;
 }

@@ -7,9 +7,13 @@ package io.github.TrafficFlowPrediction.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import io.github.TrafficFlowPrediction.entity.TrafficData;
@@ -20,10 +24,42 @@ import io.github.TrafficFlowPrediction.entity.TrafficData;
  */
 
  @Repository
-public interface TrafficDataRepository extends JpaRepository<TrafficData, Long> {
-    List<TrafficData> findByLocationAndTimestampBetween(
-        String locationName, LocalDateTime startTime, LocalDateTime endTime);
-        
-    @Query("SELECT td FROM TrafficData td WHERE td.locationName = ?1 " + "AND td.timestamp >= ?2 ORDER BY td.timestamp DESC LIMIT 24")
-    List<TrafficData> findLast24HoursData(String locationName, LocalDateTime starTime);
+public interface TrafficDataRepository extends JpaRepository<TrafficData, UUID> {
+    // Basic finder methods
+    List<TrafficData> findByLocationNameAndTimestampBetween(
+        String locationName, 
+        LocalDateTime startTime, 
+        LocalDateTime endTime
+    );
+    
+    // Pagination support
+    Page<TrafficData> findByLocationName(String locationName, Pageable pageable);
+    
+    // Custom queries
+    @Query("SELECT td FROM TrafficData td " +
+           "WHERE td.locationName = :locationName " +
+           "AND td.timestamp >= :startTime " +
+           "ORDER BY td.timestamp DESC")
+    List<TrafficData> findLast24HoursData(
+        @Param("locationName") String locationName,
+        @Param("startTime") LocalDateTime startTime
+    );
+    
+    @Query("SELECT AVG(td.congestionLevel) FROM TrafficData td " +
+           "WHERE td.locationName = :locationName " +
+           "AND td.timestamp >= :startTime")
+    Double findAverageCongestionLevel(
+        @Param("locationName") String locationName,
+        @Param("startTime") LocalDateTime startTime
+    );
+    
+    @Query("SELECT COUNT(td) FROM TrafficData td " +
+           "WHERE td.locationName = :locationName " +
+           "AND td.timestamp >= :startTime " +
+           "AND td.congestionLevel >= :level")
+    Long countHighCongestionPeriods(
+        @Param("locationName") String locationName,
+        @Param("startTime") LocalDateTime startTime,
+        @Param("level") Integer level
+    );
 }

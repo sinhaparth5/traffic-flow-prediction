@@ -20,7 +20,7 @@ import io.github.TrafficFlowPrediction.entity.TrafficPrediction;
 
  @Repository
 public interface TrafficPredictionRepository extends JpaRepository<TrafficPrediction, Long> {
-    List<TrafficPrediction> findByLocatioNameAndPredictionForTimestampAfter( String locationName, LocalDateTime timestamp);
+    List<TrafficPrediction> findByLocationNameAndPredictionForTimestampAfter( String locationName, LocalDateTime timestamp);
 
     void deleteByPredictionForTimestampBefore(LocalDateTime timestamp);
 }

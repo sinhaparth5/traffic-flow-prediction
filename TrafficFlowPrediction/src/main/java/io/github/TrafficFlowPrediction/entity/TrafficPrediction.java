@@ -6,6 +6,7 @@
 package io.github.TrafficFlowPrediction.entity;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,8 +28,8 @@ import lombok.NoArgsConstructor;
  @NoArgsConstructor
 public class TrafficPrediction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "location_name", nullable = false)
     private String locationName;
